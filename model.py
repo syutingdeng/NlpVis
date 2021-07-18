@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import umap
 from mpl_toolkits.mplot3d import Axes3D
+from prepare_data import loaddata
+
 
 class TransformersModel:
     
@@ -13,6 +15,7 @@ class TransformersModel:
         self.model_name=model_name
         self.tokenizer = BertTokenizer.from_pretrained(model_name)
         self.UserInput = UserInput
+    
 
     def setModel(self,layer):
         config = BertConfig(num_hidden_layers=layer,output_hidden_states=True)
