@@ -12,11 +12,11 @@ from prepare_data import loaddata
 
 class TransformersModel:
     
-    def __init__(self,model_name,UserInput):
+    def __init__(self,model_name):
         self.model_name=model_name
         self.tokenizer = BertTokenizer.from_pretrained(model_name)
-        self.UserInput = UserInput ####user input
         self.data = loaddata() ###load from dataset
+        
     
     def setModel(self,layer):
         config = BertConfig(num_hidden_layers=layer,output_hidden_states=True)
@@ -25,7 +25,8 @@ class TransformersModel:
         print("Model name"+self.model_name+"\n")
         print(self.model)
 
-    def getHiddenState(self,level):# get uesr input hiddenstate
+    def getUserInputHiddenState(self,UserInput,level):# get uesr input hiddenstate
+        self.UserInput = UserInput 
         inputs = self.tokenizer(self.UserInput, return_tensors="pt")
         labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
         outputs = self.model(**inputs, labels=labels)
@@ -40,9 +41,9 @@ class TransformersModel:
         for index,item in enumerate(self.data):
             if(index%10==0):
                 print("#",str(index))
-            inputs = self.tokenizer(item, return_tensors="pt",padding='max_length')
-            labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
-            outputs = self.model(**inputs, labels=labels)
+            inputs = self.tokenizer(item, return_tensors="pt",padding='max_length',max_length=50)
+            #labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
+            outputs = self.model(**inputs)
 
             #print("[CLS]embedding:")     
             #print(outputs.hidden_states[level][0][0])
@@ -53,10 +54,18 @@ class TransformersModel:
        
 
 
-
     def classify(self):
         classifier = pipeline('sentiment-analysis', model=self.model, tokenizer=self.tokenizer)
-        return classifier(self.UserInput)
+        classify = []
+        for i in self.data:
+             classify.append(classifier(i)[0]) 
+
+        self.sentiment = classify
+       
+        #return classifier(self.UserInput)
+    def UserInputClassify(self):
+        classifier = pipeline('sentiment-analysis', model=self.model, tokenizer=self.tokenizer)
+        return  classifier("I love you")[0]
 
         
     def umap(self):
@@ -78,26 +87,47 @@ class TransformersModel:
         x=[]
         y=[]
         x_min, x_max =  word_embedded_reduce.min(0), word_embedded_reduce.max(0)
-        a_norm = (word_embedded_reduce - x_min) / (x_max - x_min)
+        word_embedded_norm = (word_embedded_reduce - x_min) / (x_max - x_min)
         
-        for i in word_embedded_reduce:
-            x.append(i[0])
-            y.append(i[1])
-        print(x)
-        print(y)
-        plt.plot(x,y,'ro')
+        #for i in word_embedded_reduce:
+        #    x.append(i[0])
+        #    y.append(i[1])
+
+        x0=[]
+        y0=[]
+        x1=[]
+        y1=[]
+        
+        
+        for index,item in enumerate(word_embedded_norm):
+            if(self.sentiment[index]['label']=='LABEL_0'):
+                x0.append(item[0])
+                y0.append(item[1])
+            else:
+                x1.append(item[0])
+                y1.append(item[1])
+        print(word_embedded_reduce)
+        print("=================")
+        print(x0)
+        print(y0)
+        print(x1)
+        print(y1)
+        plt.scatter(x0,y0,c="red")
+        plt.scatter(x1,y1,c="green")
         plt.show()
-
-    
-    
-
+        #plt.plot(x,y,'ro')
+        #
     
 
 
-model0 = TransformersModel('bert-base-uncased',"UMAP is a general purpose manifold learning and dimension reduction algorithm. It is designed to be compatible with scikit-learn, making use of the same API and able to be added to sklearn pipelines.")
-model0.setModel(6)
-#model0.getHiddenState(3)
-model0.getDataSetHiddenState(6)
+
+
+model0 = TransformersModel('bert-base-uncased')
+model0.setModel(12)
+model0.getDataSetHiddenState(12)
+model0.classify()
 model0.umap()
 
-print(model0.classify())
+print(model0.sentiment)
+
+
