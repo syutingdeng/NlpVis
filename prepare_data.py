@@ -7,7 +7,7 @@ def loaddata():
     for i in range(500):
         result = "[CLS] "+dataset[i]["sentence1"]
         data.append(result)
-    print(data[0][0])   
+    #print(data[0][0])   
     return data
 
 if __name__ == '__main__':

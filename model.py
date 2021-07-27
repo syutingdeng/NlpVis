@@ -1,5 +1,5 @@
 import dataclasses
-from transformers import BertTokenizer, BertForSequenceClassification,BertConfig
+from transformers import BertTokenizer, BertForSequenceClassification,BertConfig,AutoModelForSequenceClassification
 import torch
 from transformers import pipeline
 import numpy as np
@@ -19,8 +19,11 @@ class TransformersModel:
         
     
     def setModel(self,layer):
-        config = BertConfig(num_hidden_layers=layer,output_hidden_states=True)
-        self.model = BertForSequenceClassification(config)
+        #config = BertConfig(num_hidden_layers=layer,output_hidden_states=True)
+        #self.model = BertForSequenceClassification(config)
+        self.model = AutoModelForSequenceClassification.from_pretrained(
+            self.model_name,output_hidden_states=True,
+            num_hidden_layers=layer)
         print("-----------------MODEL--------------------")
         print("Model name"+self.model_name+"\n")
         print(self.model)
@@ -44,7 +47,6 @@ class TransformersModel:
             inputs = self.tokenizer(item, return_tensors="pt",padding='max_length',max_length=50)
             #labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
             outputs = self.model(**inputs)
-
             #print("[CLS]embedding:")     
             #print(outputs.hidden_states[level][0][0])
             cls_embedding.append(outputs.hidden_states[level][0][0])##CLS embedding
@@ -55,7 +57,8 @@ class TransformersModel:
 
 
     def classify(self):
-        classifier = pipeline('sentiment-analysis', model=self.model, tokenizer=self.tokenizer)
+        classifier = pipeline('sentiment-analysis')
+        #classifier = pipeline('sentiment-analysis',model=self.model,tokenizer=self.tokenizer)
         classify = []
         for i in self.data:
              classify.append(classifier(i)[0]) 
@@ -100,13 +103,13 @@ class TransformersModel:
         
         
         for index,item in enumerate(word_embedded_norm):
-            if(self.sentiment[index]['label']=='LABEL_0'):
+            if(self.sentiment[index]['label']=='NEGATIVE'):
                 x0.append(item[0])
                 y0.append(item[1])
             else:
                 x1.append(item[0])
                 y1.append(item[1])
-        print(word_embedded_reduce)
+        #print(word_embedded_reduce)
         print("=================")
         print(x0)
         print(y0)
@@ -123,8 +126,8 @@ class TransformersModel:
 
 
 model0 = TransformersModel('bert-base-uncased')
-model0.setModel(12)
-model0.getDataSetHiddenState(12)
+model0.setModel(6)
+model0.getDataSetHiddenState(6)
 model0.classify()
 model0.umap()
 
