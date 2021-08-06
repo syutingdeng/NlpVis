@@ -1,4 +1,3 @@
-import dataclasses
 from transformers import BertTokenizer, BertForSequenceClassification,BertConfig,AutoModelForSequenceClassification
 import torch
 from transformers import pipeline
@@ -6,8 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import umap
-from mpl_toolkits.mplot3d import Axes3D
 from prepare_data import loaddata
+
+
 
 
 class TransformersModel:
@@ -36,14 +36,14 @@ class TransformersModel:
         self.hidden_states = outputs.hidden_states[level][0]
         self.length = outputs.hidden_states[level][0].shape[0]
         print("Hidden Stat layer"+str(level))
-        
         return outputs.hidden_states[level][0]
     
     def getDataSetHiddenState(self,level): # get dataset "cls" hiddenstate
         cls_embedding = []
-        for index,item in enumerate(self.data):
+        for index,item in enumerate(self.data[0]):
             if(index%10==0):
                 print("#",str(index))
+                print(item)
             inputs = self.tokenizer(item, return_tensors="pt",padding='max_length',max_length=50)
             #labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
             outputs = self.model(**inputs)
@@ -53,25 +53,28 @@ class TransformersModel:
         self.cls_embedding = cls_embedding
         self.dataset_length = len(cls_embedding)
         print("cls_embedding length",str(self.dataset_length))
-       
+    
 
 
     def classify(self):
-        classifier = pipeline('sentiment-analysis')
-        #classifier = pipeline('sentiment-analysis',model=self.model,tokenizer=self.tokenizer)
+        #classifier = pipeline('sentiment-analysis')
+        classifier = pipeline('sentiment-analysis',model=self.model,tokenizer=self.tokenizer)
         classify = []
-        for i in self.data:
+        for i in self.data[0]:
              classify.append(classifier(i)[0]) 
 
         self.sentiment = classify
        
         #return classifier(self.UserInput)
+    def ground_truth(self):
+        self.ground_truth_sentiment = self.data[1] ####
+
     def UserInputClassify(self):
         classifier = pipeline('sentiment-analysis', model=self.model, tokenizer=self.tokenizer)
         return  classifier("I love you")[0]
 
         
-    def umap(self):
+    def umap(self,mode,condition):
         reducer = umap.UMAP(random_state=42)
         word_embedding = []
         for i in range(self.dataset_length):
@@ -101,9 +104,12 @@ class TransformersModel:
         x1=[]
         y1=[]
         
-        
+        if(mode=="ground"):
+            label = self.ground_truth_sentiment
+        else:
+            label = self.sentiment
         for index,item in enumerate(word_embedded_norm):
-            if(self.sentiment[index]['label']=='NEGATIVE'):
+            if(label[index]['label']==condition):
                 x0.append(item[0])
                 y0.append(item[1])
             else:
@@ -124,13 +130,12 @@ class TransformersModel:
 
 
 
+model0 = TransformersModel('nlptown/bert-base-multilingual-uncased-sentiment')
+model0.setModel(12)
+model0.getDataSetHiddenState(12)
+model0.ground_truth()
+model0.umap(mode="ground",condition=0)
 
-model0 = TransformersModel('bert-base-uncased')
-model0.setModel(6)
-model0.getDataSetHiddenState(6)
-model0.classify()
-model0.umap()
-
-print(model0.sentiment)
-
-
+#model0.umap(condition="NEGATIVE")
+#model0.classify()
+#model0.umap(mode="normal",condition="LABEL_0")
