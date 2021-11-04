@@ -1,30 +1,38 @@
 from datasets import load_dataset
+from tagging import pos_tagging
 
 def loaddata():
     dataset = load_dataset('imdb',split="test")
     data= []
     label = []
     result= []
+    pos = []
     #esult= dataset.filter(lambda example: example['label'] == dataset.features['label'].str2int('equivalent'))[1]
-    for i in range(10):
+    for i in range(2):
         data_result = "[CLS] "+dataset[i]["text"][:500]
         data.append(data_result)
         data_lable =dataset[i]["label"]
         label.append({"label":data_lable})
-    for i in range(13000,13010):
+        pos.append(pos_tagging(data_result))
+        
+        
+    for i in range(13000,1302):
         data_result = "[CLS] "+dataset[i]["text"][:500]
         data.append(data_result)
         data_lable =dataset[i]["label"]
         label.append({"label":data_lable})
+        pos.append(pos_tagging(data_result))
+        
 
 
     result.append(data)
     result.append(label)
+    result.append(pos)
     #print(data[0][0])   
     return result
 
 if __name__ == '__main__':
-   print(len(loaddata()[0]))
+   print(loaddata())
    
 
 

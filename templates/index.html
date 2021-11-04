@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hello Page</title>
+</head>
+
+<body>
+  <p><a href=# id=calculate>calculate server side</a>
+  <p><a href=# id=draw>draw</a>
+  <p><a href=# id=all_hidden>all_hidden</a>
+  <p>
+    <span id=embedding_test></span>
+  </p>
+
+  <style>
+    .d3-tip {
+      line-height: 1;
+      padding: 6px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .selected {
+      fill: red;
+      stroke: brown;
+    }
+  </style>
+  <div id="my_dataviz" style="display: inline-block;"></div>
+  <div id="dataviz_axisZoom" style="display: inline-block;"></div>
+  <div id="my_dataviz2" style="display: inline-block;"></div>
+  <div id="my_dataviz3" style="display: inline-block;"></div>
+  <div id="my_dataviz4" style="display: inline-block;"></div>
+  <div id="my_dataviz5" style="display: inline-block;"></div>
+  
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script src="{{ url_for('static', filename='d3-tip.js') }}"></script>
+  <script src="{{ url_for('static', filename='drawd3.js') }}"></script>
+  <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+  <script src="{{ url_for('static', filename='ajax.js') }}"></script>
+  <script>
+    $SCRIPT_ROOT = {{ request.script_root | tojson }};
+  </script>
+</body>
+
+</html>
