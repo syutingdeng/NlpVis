@@ -7,14 +7,13 @@ app = Flask(__name__)
 
 model0 = TransformersModel('nlptown/bert-base-multilingual-uncased-sentiment')
 info = []
-num_layer = 2
+num_layer = 12
 @app.route('/_get_embedding')
 def get_embedding():
   
-   
     for i in range(num_layer):
         model0.setModel(i)
-        model0.getModelOutput(level=i)
+        model0.getModelOutput()
         model0.getDataSetHiddenState(i)
         model0.getDataAttention(level=i,index=1,word_index=0)
         model0.ground_truth()
@@ -41,11 +40,11 @@ def return_embedding():
     pos = pos_count_select(select=acc(info,int_list,layer=num_layer)["true_selection"],data=model0.pos,layer= num_layer)
 
 
+
     #for i in range(13):
     #    acc = model0.sentiment_Accuracy(data=int_list)
     #    result.append([acc,i])
 
-    
         
     return jsonify(result=result,score=score,attention=attention,pos=pos)
     

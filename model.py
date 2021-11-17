@@ -1,11 +1,12 @@
 from inspect import classify_class_attrs
+import tokenizers
 from transformers import BertTokenizer, BertForSequenceClassification, BertConfig, AutoModelForSequenceClassification, AutoTokenizer
 import torch
 from transformers import pipeline
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
+import json
 
 import umap
 from analysis import pos_count
@@ -18,7 +19,7 @@ class TransformersModel:
         self.model_name = model_name
         self.tokenizer = BertTokenizer.from_pretrained(model_name)
         self.data = loaddata()  # load from dataset
-
+        self.numOfdata = len(self.data[0])
     def setModel(self, layer):
         #config = BertConfig(num_hidden_layers=layer,output_hidden_states=True)
         #self.model = BertForSequenceClassification(config)
@@ -42,19 +43,21 @@ class TransformersModel:
         self.length = outputs.hidden_states[level][0].shape[0]
         print("Hidden Stat layer"+str(level))
         return outputs.hidden_states[level][0]
-
-    def getModelOutput(self,level):
+    
+    def getModelOutput(self):
+        model_inputs = []
         outputs = []
         for index, item in enumerate(self.data[0]):
             if(index %10 == 0):
                 print("#", str(index))
-                print(item)
             inputs = self.tokenizer(
                 item, return_tensors="pt", padding='max_length', max_length=50)
             # labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
+            model_inputs.append(inputs)
             outputs.append(self.model(**inputs)) 
+        self.model_inputs = model_inputs
         self.outputs = outputs
-        self.level = level
+       
         
 
 
@@ -71,11 +74,10 @@ class TransformersModel:
             
     def getDataSetHiddenState(self, level):  # get dataset "cls" hiddenstate
         cls_embedding = []
-        
         for i in self.outputs:
             cls_embedding.append(
                i.hidden_states[level][0][0])
-            print(len(i.hidden_states[level][0]))
+            #print(len(i.hidden_states[level][0]))
             
         self.cls_embedding = cls_embedding
         self.cls_embedding_np = np.array(cls_embedding)
@@ -189,7 +191,7 @@ class TransformersModel:
                 item.append("#619CFF")
             item.append(index)
             item.append(
-                {"ground": self.ground_truth_sentiment[index]['label'], "sentiment": self.sentiment[index]['label'],"layer":self.level})
+                {"ground": self.ground_truth_sentiment[index]['label'], "sentiment": self.sentiment[index]['label'],"layer":self.layer})
 
         return word_embedded_norm
 
@@ -250,11 +252,22 @@ class TransformersModel:
             pos_dic.append(pos_count(i))
         self.pos = pos_dic    
 
-    
-    
-    
+    def embedding_by_word_json(self,level):
+        hidden_value = []
+        for i in self.outputs:
+            for n in i.hidden_states[level][0].tolist():
+                hidden_value.append(n)
+        #print(len(hidden_value))
+        reducer = umap.UMAP(random_state=42)
+        word_embedded_reduce = reducer.fit_transform(hidden_value)
+        x_min, x_max = word_embedded_reduce.min(0), word_embedded_reduce.max(0)
+        word_embedded_norm = (
+            (word_embedded_reduce - x_min) / (x_max - x_min)).tolist()
+     
         
+        return  word_embedded_norm
 
+        
 
 
 if __name__ == "__main__":

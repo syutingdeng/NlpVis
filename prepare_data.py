@@ -16,7 +16,7 @@ def loaddata():
         pos.append(pos_tagging(data_result))
         
         
-    for i in range(13000,1302):
+    for i in range(13000,13002):
         data_result = "[CLS] "+dataset[i]["text"][:500]
         data.append(data_result)
         data_lable =dataset[i]["label"]

@@ -43,6 +43,7 @@ $(function () {
 
 
 
+
 $(function () {
   $('a#all_hidden').bind('click', function () {
     $.ajax({
