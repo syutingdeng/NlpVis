@@ -1,95 +1,98 @@
 
 
+// var margin = { top: 10, right: 30, bottom: 30, left: 60 },
+//     width = 460 - margin.left - margin.right,
+//     height = 400 - margin.top - margin.bottom;
 
 
-function draw_scatter(data, r) {
-
-    var margin = { top: 10, right: 30, bottom: 30, left: 60 },
-        width = 460 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
-
-    var svg = d3.select("#my_dataviz")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-
-    var x = d3.scaleLinear()
-        .domain([0, 1])
-        .range([0, width]);
-    var xAxis = svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
-
-    // Add Y axis
-    var y = d3.scaleLinear()
-        .domain([0, 1])
-        .range([height, 0]);
-    var yAxis = svg.append("g")
-        .call(d3.axisLeft(y));
+// var svg0 = d3.select("#my_dataviz")
+//     .append("svg")
+//     .attr("width", width + margin.left + margin.right)
+//     .attr("height", height + margin.top + margin.bottom)
+//     .append("g")
+//     .attr("transform",
+//         "translate(" + margin.left + "," + margin.top + ")");
 
 
-    // Add dots
-
-    var circle = svg.append('g')
-    var circleG = svg.append('g')
-        .selectAll("dot")
-        .data(data.result)
-        .enter()
-        .append("circle")
-        .attr("id", d => d[3])
-        .attr("cx", function (d) { return x(d[0]); })
-        .attr("cy", function (d) { return y(d[1]); })
-        .attr("r", r)
-        .style("fill", d => d[2])
+// function draw_scatter(data, layer, r) {
+    
+//     svg0.selectAll("g").remove()
 
 
+//     var x = d3.scaleLinear()
+//         .domain([0, 1])
+//         .range([0, width]);
+//     var xAxis = svg0.append("g")
+//         .attr("transform", "translate(0," + height + ")")
+//         .call(d3.axisBottom(x));
 
-    var tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .html(d => d[4].layer);
-
-    circleG.on('mouseover', tip.show)
-        .on('mouseout', tip.hide);
-
-    circleG.call(tip);
-
-
-    //brush
-
-    var brush = d3.brush()
-        .extent([[0, 0], [width, height]])
-        .on("start", brushed)
-        .on("brush", brushed)
-        ;
-    circle.call(brush);
-
-    function brushed() {
-        var extent = d3.event.selection;
-        var select_data = [];
-        circleG
-            .classed("selected", function (d) {
-                selected =
-                    x(d[0]) >= extent[0][0] &&
-                    x(d[0]) <= extent[1][0] &&
-                    y(d[1]) >= extent[0][1] &&
-                    y(d[1]) <= extent[1][1];
-                if (selected) {
-                    select_data.push(d);
-                }
-                //console.log("vis", select_data);
-                return selected;
-            });
+//     // Add Y axis
+//     var y = d3.scaleLinear()
+//         .domain([0, 1])
+//         .range([height, 0]);
+//     var yAxis = svg0.append("g")
+//         .call(d3.axisLeft(y));
 
 
-    }
+//     // Add dots
 
-    //console.log(rawData);
-    //console.log("td", tmp);
+//     var circle = svg0.append('g')
+//     var circleG = svg0.append('g')
+//         .selectAll("dot")
+//         .data(data)
+//         .enter()
+//         .append("circle")
+//         .attr("id", d => d.id)
+//         .attr("cx", function (d) { return x(d[layer]['hidden'][0]); })
+//         .attr("cy", function (d) { return y(d[layer]['hidden'][1]); })
+//         .attr("r", r)
+//         .style("fill", "#000000")
 
-}
+
+
+//     var tip = d3.tip()
+//         .attr('class', 'd3-tip')
+//         .html(d => d[4].layer);
+
+//     circleG.on('mouseover', tip.show)
+//         .on('mouseout', tip.hide);
+
+//     circleG.call(tip);
+
+
+//     //brush
+
+//     var brush = d3.brush()
+//         .extent([[0, 0], [width, height]])
+//         .on("start", brushed)
+//         .on("brush", brushed)
+//         ;
+//     circle.call(brush);
+
+//     function brushed() {
+//         var extent = d3.event.selection;
+//         var select_data = [];
+//         circleG
+//             .classed("selected", function (d) {
+//                 selected =
+//                     x(d[0]) >= extent[0][0] &&
+//                     x(d[0]) <= extent[1][0] &&
+//                     y(d[1]) >= extent[0][1] &&
+//                     y(d[1]) <= extent[1][1];
+//                 if (selected) {
+//                     select_data.push(d);
+//                 }
+//                 //console.log("vis", select_data);
+//                 return selected;
+//             });
+
+
+//     }
+
+//     //console.log(rawData);
+//     //console.log("td", tmp);
+
+// }
 
 
 function draw_scatter_zoom(data) {
@@ -185,6 +188,95 @@ function draw_scatter_zoom(data) {
 
 
 
+
+}
+
+function draw_scatter_json(data, r) {
+
+    var margin = { top: 10, right: 30, bottom: 30, left: 60 },
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+    console.log(data)
+    var SVG = d3.select("#my_dataviz6")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleLinear()
+        .domain([0, 1])
+        .range([0, width]);
+    var xAxis = SVG.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    // Add Y axis
+    var y = d3.scaleLinear()
+        .domain([0, 1])
+        .range([height, 0]);
+    var yAxis = SVG.append("g")
+        .call(d3.axisLeft(y));
+
+
+    // Add dots
+
+    var circle = SVG.append('g')
+    var circleG = SVG.append('g')
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("id", d => d.word)
+        .attr("cx", function (d) { return x(d.hidden[0]); })
+        .attr("cy", function (d) { return y(d.hidden[1]); })
+        .attr("r", r)
+        .style("fill", d => d.color)
+
+
+
+    var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .html(d => d.word);
+
+    circleG.on('mouseover', tip.show)
+        .on('mouseout', tip.hide);
+
+    circleG.call(tip);
+
+
+    //brush
+
+    var brush = d3.brush()
+        .extent([[0, 0], [width, height]])
+        .on("start", brushed)
+        .on("brush", brushed)
+        ;
+    circle.call(brush);
+
+    function brushed() {
+        var extent = d3.event.selection;
+        var select_data = [];
+        circleG
+            .classed("selected", function (d) {
+                selected =
+                    x(d[0]) >= extent[0][0] &&
+                    x(d[0]) <= extent[1][0] &&
+                    y(d[1]) >= extent[0][1] &&
+                    y(d[1]) <= extent[1][1];
+                if (selected) {
+                    select_data.push(d);
+                }
+                //console.log("vis", select_data);
+                return selected;
+            });
+
+
+    }
+
+    //console.log(rawData);
+    //console.log("td", tmp);
 
 }
 
@@ -397,11 +489,11 @@ function drawBarPlot(data, layer) {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-    sort_data = data.sort(function(x,y){
-        return d3.ascending(x.amount,y.amount)
+    sort_data = data.sort(function (x, y) {
+        return d3.ascending(x.amount, y.amount)
     })
     console.log(sort_data)
-            
+
     var x = d3.scaleBand()
         .range([0, width])
         .domain(sort_data.map(function (d) { return d.pos; }))
@@ -415,7 +507,7 @@ function drawBarPlot(data, layer) {
 
     // Add Y axis
     var y = d3.scaleLinear()
-        .domain([0, d3.max(sort_data,d=>d.amount)])
+        .domain([0, d3.max(sort_data, d => d.amount)])
         .range([height, 0]);
     svg.append("g")
         .call(d3.axisLeft(y));

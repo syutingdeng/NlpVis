@@ -12,6 +12,14 @@ import umap
 from analysis import pos_count
 from prepare_data import loaddata
 
+def reduceDimension(input):
+    reducer = umap.UMAP(random_state=42)
+    embedded_reduce = reducer.fit_transform(input)
+    x_min, x_max =embedded_reduce.min(0), embedded_reduce.max(0)
+    embedded_reduce_norm = (
+        (embedded_reduce - x_min) / (x_max - x_min)).tolist()
+    return embedded_reduce_norm
+    
 
 class TransformersModel:
 
@@ -20,6 +28,8 @@ class TransformersModel:
         self.tokenizer = BertTokenizer.from_pretrained(model_name)
         self.data = loaddata()  # load from dataset
         self.numOfdata = len(self.data[0])
+    
+    
     def setModel(self, layer):
         #config = BertConfig(num_hidden_layers=layer,output_hidden_states=True)
         #self.model = BertForSequenceClassification(config)
@@ -32,17 +42,7 @@ class TransformersModel:
         print("Model name"+self.model_name+"\n")
         print(self.model)
         self.layer = layer
-
-    # get uesr input hiddenstate
-    def getUserInputHiddenState(self, UserInput, level):
-        self.UserInput = UserInput
-        inputs = self.tokenizer(self.UserInput, return_tensors="pt")
-        labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
-        outputs = self.model(**inputs, labels=labels)
-        self.hidden_states = outputs.hidden_states[level][0]
-        self.length = outputs.hidden_states[level][0].shape[0]
-        print("Hidden Stat layer"+str(level))
-        return outputs.hidden_states[level][0]
+    
     
     def getModelOutput(self):
         model_inputs = []
@@ -57,22 +57,22 @@ class TransformersModel:
             outputs.append(self.model(**inputs)) 
         self.model_inputs = model_inputs
         self.outputs = outputs
-       
-        
+    ######################################################### 
+    # Get Embedding Vector  
+    #########################################################
+    # get uesr input hiddenstate
+    def getUserInputHiddenState(self, UserInput, level):
+        self.UserInput = UserInput
+        inputs = self.tokenizer(self.UserInput, return_tensors="pt")
+        labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
+        outputs = self.model(**inputs, labels=labels)
+        self.hidden_states = outputs.hidden_states[level][0]
+        self.length = outputs.hidden_states[level][0].shape[0]
+        print("Hidden Stat layer"+str(level))
+        return outputs.hidden_states[level][0]
 
-
-
-    def getDataAttention(self, level,index,word_index):#哪個字對應哪個字的Attention
-        cls_attention = []
-        if level !=0 :
-            for i in self.outputs:
-               cls_attention.append(i.attentions[level-1][0][0][index][word_index].detach().numpy().tolist())
-        else:
-            for i in range(len(self.data[0])):
-                cls_attention.append(0)
-        self.attention = cls_attention
-            
-    def getDataSetHiddenState(self, level):  # get dataset "cls" hiddenstate
+    # get dataset "cls" hiddenstate
+    def getDataSetHiddenState(self, level):  
         cls_embedding = []
         for i in self.outputs:
             cls_embedding.append(
@@ -88,6 +88,35 @@ class TransformersModel:
             word_embedding.append(self.cls_embedding[i].detach().numpy())
         self.web_word_embedding = np.array(word_embedding)
         return np.array(word_embedding).tolist()
+    
+    #get reduce cls embedding
+    def getClsEmbedding(self,level):
+        cls_embedding = []
+        cls_embedding_np = []
+        for i in self.outputs:
+            cls_embedding.append(
+               i.hidden_states[level][0][0])
+        for i in range(len(cls_embedding)):
+            cls_embedding_np.append(cls_embedding[i].detach().numpy())
+        
+        return reduceDimension(cls_embedding_np)
+    
+    ########################End of Get Embedding####################
+       
+        
+
+    def getDataAttention(self, level,index,word_index):#哪個字對應哪個字的Attention
+        cls_attention = []
+        if level !=0 :
+            for i in self.outputs:
+               cls_attention.append(i.attentions[level-1][0][0][index][word_index].detach().numpy().tolist())
+        else:
+            for i in range(len(self.data[0])):
+                cls_attention.append(0)
+        self.attention = cls_attention
+            
+   
+        
 
 
     def classify(self):
@@ -228,7 +257,7 @@ class TransformersModel:
                 level_count =level_count+1
             item.append(data_count)     
             item.append({"layer":level_count})        
-                    
+                        
         
         print(word_embedded_norm)
         return word_embedded_norm

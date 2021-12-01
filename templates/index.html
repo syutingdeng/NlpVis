@@ -7,9 +7,14 @@
 </head>
 
 <body>
-  <p><a href=# id=calculate>calculate server side</a>
-  <p><a href=# id=draw>draw</a>
-  <p><a href=# id=all_hidden>all_hidden</a>
+
+  <a href=# id=seq>Sequence Analysis</a>
+  <div id="LayerSelection"></div>
+
+
+  <p><a href=# id=calculate style="display: inline-block;">calculate server side</a>
+  <p><a href=# id=draw style="display: inline-block;">draw</a>
+  <p><a href=# id=all_hidden style="display: inline-block;">all_hidden</a>
   <p>
     <span id=embedding_test></span>
   </p>
@@ -35,10 +40,13 @@
   <div id="my_dataviz3" style="display: inline-block;"></div>
   <div id="my_dataviz4" style="display: inline-block;"></div>
   <div id="my_dataviz5" style="display: inline-block;"></div>
-  
+  <div id="my_dataviz6" style="display: inline-block;"></div>
+
   <script src="https://d3js.org/d3.v4.js"></script>
   <script src="{{ url_for('static', filename='d3-tip.js') }}"></script>
   <script src="{{ url_for('static', filename='drawd3.js') }}"></script>
+  <script src="{{ url_for('static', filename='d3_dropdownBotton.js') }}"></script>
+  <script src="{{ url_for('static', filename='d3_drawScatter_clsEmbedding.js') }}"></script>
   <script src="{{ url_for('static', filename='jquery.js') }}"></script>
   <script src="{{ url_for('static', filename='ajax.js') }}"></script>
   <script>

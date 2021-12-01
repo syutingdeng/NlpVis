@@ -1,0 +1,171 @@
+[
+    {
+        "id": 0,
+        "sentence": "I went and saw this movie last night after being coaxed to by a few friends of mine. I'll admit that I was reluctant to see it because from what I knew of Ashton Kutcher he was only able to do comedy. I was wrong. Kutcher played the character of Jake Fischer very well, and Kevin Costner played Ben Randall with such professionalism. The sign of a good movie is that it can toy with our emotions. This one did exactly that. The entire theater (which was sold out) was overcome by laughter during the ",
+        "groundtruth": {
+            "label": 1
+        },
+        "pos": {
+            "PRON": 11,
+            "VERB": 14,
+            "CCONJ": 2,
+            "DET": 10,
+            "NOUN": 12,
+            "ADJ": 8,
+            "ADP": 13,
+            "AUX": 8,
+            "PUNCT": 9,
+            "SCONJ": 3,
+            "PART": 2,
+            "PROPN": 9,
+            "ADV": 4
+        },
+        "layer0": {
+            "hidden": [
+                1.0,
+                0.6416462659835815
+            ],
+            "classify": {
+                "label": "4 stars",
+                "score": 0.23737666010856628
+            }
+        },
+        "layer1": {
+            "hidden": [
+                0.8316807150840759,
+                0.0
+            ],
+            "classify": {
+                "label": "1 star",
+                "score": 0.21878251433372498
+            }
+        }
+    },
+    {
+        "id": 1,
+        "sentence": "Actor turned director Bill Paxton follows up his promising debut, the Gothic-horror \"Frailty\", with this family friendly sports drama about the 1913 U.S. Open where a young American caddy rises from his humble background to play against his Bristish idol in what was dubbed as \"The Greatest Game Ever Played.\" I'm no fan of golf, and these scrappy underdog sports flicks are a dime a dozen (most recently done to grand effect with \"Miracle\" and \"Cinderella Man\"), but some how this film was enthralli",
+        "groundtruth": {
+            "label": 1
+        },
+        "pos": {
+            "NOUN": 22,
+            "VERB": 10,
+            "PROPN": 9,
+            "ADP": 10,
+            "PRON": 5,
+            "ADJ": 8,
+            "PUNCT": 16,
+            "DET": 11,
+            "NUM": 1,
+            "ADV": 5,
+            "PART": 1,
+            "AUX": 1,
+            "CCONJ": 3
+        },
+        "layer0": {
+            "hidden": [
+                0.0,
+                0.2972560226917267
+            ],
+            "classify": {
+                "label": "4 stars",
+                "score": 0.23737666010856628
+            }
+        },
+        "layer1": {
+            "hidden": [
+                1.0,
+                0.9775740504264832
+            ],
+            "classify": {
+                "label": "1 star",
+                "score": 0.22002236545085907
+            }
+        }
+    },
+    {
+        "id": 2,
+        "sentence": "I'm not really sure where to begin. From start to finish, bad, stinky bad, like stepping into a port-a-john on a 100 degree day. If you force yourself to watch this as I did, keep some Vicodin handy for the pain. I will never understand how flicks this bad make it past the cutting room without the entire reel ending up on the floor. The movie is a cross between Gumby rides Pokey, meets the terminator, meets Wally Beaver playing cowboys and Indians without the cowboys. I've seen better animation ",
+        "groundtruth": {
+            "label": 0
+        },
+        "pos": {
+            "PRON": 7,
+            "VERB": 15,
+            "PART": 3,
+            "ADV": 5,
+            "ADJ": 6,
+            "PUNCT": 13,
+            "ADP": 13,
+            "NOUN": 19,
+            "DET": 14,
+            "NUM": 1,
+            "SCONJ": 1,
+            "PROPN": 6,
+            "AUX": 3,
+            "CCONJ": 1
+        },
+        "layer0": {
+            "hidden": [
+                0.31011763215065,
+                1.0
+            ],
+            "classify": {
+                "label": "4 stars",
+                "score": 0.23737666010856628
+            }
+        },
+        "layer1": {
+            "hidden": [
+                0.0,
+                0.20428819954395294
+            ],
+            "classify": {
+                "label": "1 star",
+                "score": 0.21854767203330994
+            }
+        }
+    },
+    {
+        "id": 3,
+        "sentence": "I thought i could see something good but... I am tired after seeing this movie, i don't know what i hated the most: the script, the acting, the FX or the music. Try to picture the worst Power Rangers episode and would still be to kind. I've seen better FX in FPS Games( The touch with the bone sword or his breath that is making the people disappear in a green smoke is touch of genius) and the music seems to come from a spaghetti western. I did liked how the women in the car was screaming, when th",
+        "groundtruth": {
+            "label": 0
+        },
+        "pos": {
+            "PRON": 10,
+            "VERB": 16,
+            "AUX": 9,
+            "ADJ": 5,
+            "CCONJ": 5,
+            "PUNCT": 11,
+            "ADP": 7,
+            "DET": 16,
+            "NOUN": 18,
+            "PART": 4,
+            "ADV": 4,
+            "PROPN": 6,
+            "X": 1
+        },
+        "layer0": {
+            "hidden": [
+                0.6931745409965515,
+                0.0
+            ],
+            "classify": {
+                "label": "4 stars",
+                "score": 0.23737666010856628
+            }
+        },
+        "layer1": {
+            "hidden": [
+                0.18338385224342346,
+                1.0
+            ],
+            "classify": {
+                "label": "1 star",
+                "score": 0.2198209911584854
+            }
+        }
+    }
+]

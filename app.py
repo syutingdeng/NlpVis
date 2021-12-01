@@ -7,10 +7,15 @@ app = Flask(__name__)
 
 model0 = TransformersModel('nlptown/bert-base-multilingual-uncased-sentiment')
 info = []
-num_layer = 12
+num_layer = 2
+@app.route('/_get_sentence')
+def get_sentence():
+    with open ("all_dataset.json")as f:
+        all_dataset = json.load(f)
+    return jsonify(all_dataset = all_dataset)
 @app.route('/_get_embedding')
 def get_embedding():
-  
+    
     for i in range(num_layer):
         model0.setModel(i)
         model0.getModelOutput()
@@ -19,19 +24,30 @@ def get_embedding():
         model0.ground_truth()
         model0.classify()
         model0.part_of_speech()
+        
         info.append({"ground":model0.ground_truth_sentiment,
                     "classify":model0.sentiment,
                     "layer":i,
                     "score":model0.score,
                     "attention":model0.attention,
                     })
+    with open ('./data/hidden.json') as f:
+         hidden0_json = json.load(f)
+    with open ('./data/hidden4.json') as f:
+         hidden4_json = json.load(f)
+    with open ('./data/hidden7.json') as f:
+         hidden7_json = json.load(f)
+    with open ('./data/hidden12.json') as f:
+         hidden12_json = json.load(f)
   
-    return jsonify(result = model0.web_umap(mode="ground",condition1=0,condition2=1),
+    return jsonify(result = model0.web_umap(mode="ground",condition1=0,condition2=1),hidden0 = hidden0_json,
+                    hidden4 = hidden4_json,hidden7 = hidden7_json,hidden12 = hidden12_json
                    )
     
 @app.route('/_return_select', methods=['POST'])
 def return_embedding():
     a = request.form.get("ids")
+    print(a)
     a_list = json.loads(a)
     int_list = list(map(int,a_list))
     result = acc(info,int_list,layer=num_layer)["accuracy"]
